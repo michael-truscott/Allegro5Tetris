@@ -13,8 +13,8 @@ public:
 	Board();
 	~Board();
 
-	int GetBlock(int x, int y) const { return m_blocks[y][x]; }
-	void SetBlock(int x, int y, int value) { m_blocks[y][x] = value; }
+	BLOCKCOLOR GetBlock(int x, int y) const { return m_blocks[y][x]; }
+	void SetBlock(int x, int y, BLOCKCOLOR value) { m_blocks[y][x] = value; }
 
 	void AddPieceBlocks(const Piece& piece);
 	int ClearFullLines();
@@ -23,6 +23,6 @@ public:
 
 private:
 	void RemoveLine(int line);
-	int m_blocks[BOARD_H][BOARD_W];
+	BLOCKCOLOR m_blocks[BOARD_H][BOARD_W];
 };
 

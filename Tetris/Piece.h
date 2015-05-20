@@ -1,5 +1,7 @@
 #pragma once
 
+#include "global.h"
+
 enum PIECETYPE
 {
 	PIECE_I,
@@ -34,9 +36,9 @@ public:
 			m_direction = 3;
 	}
 
-	int GetBlock(int x, int y) const
+	BLOCKCOLOR GetBlock(int x, int y) const
 	{
-		return m_blocks[m_direction][y][x];
+		return m_blockMask[m_direction] & (1 << (15 - (y * 4 + x))) ? m_color : COLOR_NONE; // hehe
 	}
 
 	bool OutOfBounds() const;
@@ -58,8 +60,10 @@ public:
 
 	int X, Y;	// Public, since we'll be modifying these directly anyway
 private:
+	uint16 m_blockMask[4];
 	int m_blocks[4][4][4]; // ugh
 	int m_direction;
+	BLOCKCOLOR m_color;
 
 	int m_oldX, m_oldY, m_oldDir;
 };

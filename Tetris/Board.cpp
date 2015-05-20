@@ -4,13 +4,7 @@
 
 Board::Board()
 {
-	for (int j = 0; j < BOARD_H; j++)
-	{
-		for (int i = 0; i < BOARD_W; i++)
-		{
-			m_blocks[j][i] = 0;
-		}
-	}
+	memset(m_blocks, 0, sizeof(m_blocks));
 }
 
 
@@ -24,7 +18,7 @@ void Board::AddPieceBlocks(const Piece& piece)
 	{
 		for (int i = 0; i < 4; i++)
 		{
-			int temp = piece.GetBlock(i, j);
+			BLOCKCOLOR temp = piece.GetBlock(i, j);
 			if (temp)
 				SetBlock(piece.X + i, piece.Y + j, temp);
 		}
@@ -81,10 +75,44 @@ void Board::RemoveLine(int line)
 	for (int x = 0; x < BOARD_W; x++)
 	{
 		// Erase the block in the line
-		SetBlock(x, line, 0);
+		SetBlock(x, line, COLOR_NONE);
 		// Move the other blocks down
 		for (int i = line; i > 0; i--)
 			SetBlock(x, i, GetBlock(x, i - 1));
+	}
+}
+
+ALLEGRO_COLOR GetColor(BLOCKCOLOR colour)
+{
+	switch (colour)
+	{
+	case COLOR_NONE:
+		return al_map_rgb(0, 0, 0);
+		break;
+	case COLOR_CYAN:
+		return al_map_rgb(0, 255, 255);
+		break;
+	case COLOR_YELLOW:
+		return al_map_rgb(255, 255, 0);
+		break;
+	case COLOR_PURPLE:
+		return al_map_rgb(255, 0, 255);
+		break;
+	case COLOR_GREEN:
+		return al_map_rgb(0, 255, 0);
+		break;
+	case COLOR_RED:
+		return al_map_rgb(255, 0, 0);
+		break;
+	case COLOR_BLUE:
+		return al_map_rgb(0, 0, 255);
+		break;
+	case COLOR_ORANGE:
+		return al_map_rgb(255, 0xA5, 0);
+		break;
+	default:
+		return al_map_rgb(0, 0, 0);
+		break;
 	}
 }
 
@@ -96,8 +124,8 @@ void Board::Render(int x, int y) const
 		{
 			int blockx = x + i*BLOCK_SIZE;
 			int blocky = y + j*BLOCK_SIZE;
-			if (GetBlock(i,j))
-				al_draw_filled_rectangle(blockx, blocky, blockx + BLOCK_SIZE, blocky + BLOCK_SIZE, al_map_rgb(255, 255, 0));
+			if (BLOCKCOLOR color = GetBlock(i, j))
+				al_draw_filled_rectangle(blockx, blocky, blockx + BLOCK_SIZE, blocky + BLOCK_SIZE, GetColor(color));
 			al_draw_rectangle(blockx, blocky, blockx + BLOCK_SIZE, blocky + BLOCK_SIZE, al_map_rgb(255, 255, 255), 1);
 		}
 	}

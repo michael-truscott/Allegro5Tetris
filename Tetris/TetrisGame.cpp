@@ -9,15 +9,15 @@ ALLEGRO_DISPLAY *display;
 ALLEGRO_FONT *font;
 
 TetrisGame::TetrisGame() :
-	m_quit(false),
-	m_gameOver(false),
-	m_autofallFrameThreshold(AUTOFALL_FRAMES_DEFAULT),
-	m_framesSinceAutofall(0),
-	m_linesCleared(0),
-	m_score(0),
 	m_curPiece((PIECETYPE)(rand() % PIECE_MAX)),
 	m_nextPiece((PIECETYPE)(rand() % PIECE_MAX))
 {
+	m_quit = false;
+	m_gameOver = false;
+	m_autofallFrameThreshold = AUTOFALL_FRAMES_DEFAULT;
+	m_framesSinceAutofall = 0;
+	m_linesCleared = 0;
+	m_score = 0;
 	Init();
 }
 
@@ -78,7 +78,17 @@ void TetrisGame::Update()
 			// Increase autofall speed
 			if (levelAfter > levelBefore && m_autofallFrameThreshold > 2)
 				m_autofallFrameThreshold -= 2;
-			// TODO: Add to score
+			// Add to score
+			int basescore;
+			switch (linesCleared)
+			{
+			case 1: basescore = 40; break;
+			case 2: basescore = 100; break;
+			case 3: basescore = 300; break;
+			case 4: basescore = 1200; break;
+			default: basescore = 0; break;
+			}
+			m_score += basescore * (levelBefore + 1);
 		}
 	}
 	else
