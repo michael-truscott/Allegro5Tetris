@@ -28,7 +28,6 @@ private:
 	void MovePieceL();
 	void MovePieceR();
 	void MovePieceDown();
-	bool PieceIntersectsBoard();
 	bool PieceHitGround();
 	void Quit() { m_quit = true; }
 

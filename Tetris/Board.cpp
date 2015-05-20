@@ -18,7 +18,7 @@ Board::~Board()
 {
 }
 
-void Board::AddPieceBlocks(Piece piece)
+void Board::AddPieceBlocks(const Piece& piece)
 {
 	for (int j = 0; j < 4; j++)
 	{
@@ -29,6 +29,26 @@ void Board::AddPieceBlocks(Piece piece)
 				SetBlock(piece.X + i, piece.Y + j, temp);
 		}
 	}
+}
+
+bool Board::PieceIntersects(const Piece& piece) const
+{
+	// Warning: will probably compare out-of-bounds memory if the piece is outside the game area,
+	// so make sure any bound-correcting adjustment is done beforehand
+	for (int j = 0; j < 4; j++)
+	{
+		for (int i = 0; i < 4; i++)
+		{
+			if (piece.GetBlock(i, j))
+			{
+				int x = piece.X + i;
+				int y = piece.Y + j;
+				if (this->GetBlock(x, y))
+					return true;
+			}
+		}
+	}
+	return false;
 }
 
 int Board::ClearFullLines()
@@ -68,7 +88,7 @@ void Board::RemoveLine(int line)
 	}
 }
 
-void Board::Render(int x, int y)
+void Board::Render(int x, int y) const
 {
 	for (int j = 0; j < BOARD_H; j++)
 	{

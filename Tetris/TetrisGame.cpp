@@ -104,76 +104,68 @@ void TetrisGame::Reset()
 
 void TetrisGame::RotatePieceL()
 {
-	
+	m_curPiece.SaveState();
 	m_curPiece.RotateL();
-	if (PieceIntersectsBoard())
-		m_curPiece.RotateR();
+	if (m_board.PieceIntersects(m_curPiece))
+		m_curPiece.RevertState();
 	else if (m_curPiece.OutOfBounds())
+	{
 		m_curPiece.Kick();
-	// BUG: A kicked piece can push its way inside existing blocks,
-	// this method should check if it's going to cause an collision and revert if so.
+		// A kicked piece can push its way inside existing blocks.
+		// Check if it's going to cause an collision and revert if so.
+		if (m_board.PieceIntersects(m_curPiece))
+			m_curPiece.RevertState();
+	}
 }
 
 void TetrisGame::RotatePieceR()
 {
+	m_curPiece.SaveState();
 	m_curPiece.RotateR();
-	if (PieceIntersectsBoard())
-		m_curPiece.RotateL();
+	if (m_board.PieceIntersects(m_curPiece))
+		m_curPiece.RevertState();
 	else if (m_curPiece.OutOfBounds())
+	{
 		m_curPiece.Kick();
+		if (m_board.PieceIntersects(m_curPiece))
+			m_curPiece.RevertState();
+	}
 }
 
 void TetrisGame::MovePieceL()
 {
+	m_curPiece.SaveState();
 	// Move the piece left
 	m_curPiece.X--;
 	// If it intersects the board, or goes out of bounds, move it back
-	if (m_curPiece.OutOfBounds() || PieceIntersectsBoard())
-		m_curPiece.X++;
+	if (m_curPiece.OutOfBounds() || m_board.PieceIntersects(m_curPiece))
+		m_curPiece.RevertState();
 }
 
 void TetrisGame::MovePieceR()
 {
+	m_curPiece.SaveState();
 	// Move the piece right
 	m_curPiece.X++;
 	// If it intersects the board, or goes out of bounds, move it back
-	if (m_curPiece.OutOfBounds() || PieceIntersectsBoard())
-		m_curPiece.X--;
+	if (m_curPiece.OutOfBounds() || m_board.PieceIntersects(m_curPiece))
+		m_curPiece.RevertState();
 }
 
 void TetrisGame::MovePieceDown()
 {
+	m_curPiece.SaveState();
 	m_curPiece.Y++;
-	if (PieceHitGround() || PieceIntersectsBoard())
+	if (PieceHitGround() || m_board.PieceIntersects(m_curPiece))
 	{
-		m_curPiece.Y--;
+		m_curPiece.RevertState();
 		m_board.AddPieceBlocks(m_curPiece);
 		m_curPiece = m_nextPiece;
 		m_nextPiece = Piece((PIECETYPE)(rand() % PIECE_MAX));
 		// If the new piece collides with the board right away, the player has lost the game
-		if (PieceIntersectsBoard())
+		if (m_board.PieceIntersects(m_curPiece))
 			m_gameOver = true;
 	}
-}
-
-bool TetrisGame::PieceIntersectsBoard()
-{
-	// Warning: will probably compare out-of-bounds memory if the piece is outside the game area,
-	// so make sure any bound-correcting adjustment is done beforehand
-	for (int j = 0; j < 4; j++)
-	{
-		for (int i = 0; i < 4; i++)
-		{
-			if (m_curPiece.GetBlock(i, j))
-			{
-				int x = m_curPiece.X + i;
-				int y = m_curPiece.Y + j;
-				if (m_board.GetBlock(x,y))
-					return true;
-			}
-		}
-	}
-	return false;
 }
 
 // Function to check whether the current piece's projected movement will cause it to hit the ground

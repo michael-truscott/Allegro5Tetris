@@ -34,19 +34,33 @@ public:
 			m_direction = 3;
 	}
 
-	int GetBlock(int x, int y)
+	int GetBlock(int x, int y) const
 	{
 		return m_blocks[m_direction][y][x];
 	}
 
-	bool OutOfBounds();
+	bool OutOfBounds() const;
 	void Kick();
+	void SaveState()
+	{
+		m_oldX = X;
+		m_oldY = Y;
+		m_oldDir = m_direction;
+	}
+	void RevertState()
+	{
+		X = m_oldX;
+		Y = m_oldY;
+		m_direction = m_oldDir;
+	}
 
-	void Render(int x, int y);
+	void Render(int x, int y) const;
 
 	int X, Y;	// Public, since we'll be modifying these directly anyway
 private:
 	int m_blocks[4][4][4]; // ugh
 	int m_direction;
+
+	int m_oldX, m_oldY, m_oldDir;
 };
 

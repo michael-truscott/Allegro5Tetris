@@ -280,7 +280,7 @@ Piece::~Piece()
 {
 }
 
-bool Piece::OutOfBounds()
+bool Piece::OutOfBounds() const
 {
 	for (int j = 0; j < 4; j++)
 	{
@@ -335,7 +335,7 @@ void Piece::Kick()
 	} while (foundCol);
 }
 
-void Piece::Render(int x, int y)
+void Piece::Render(int x, int y) const
 {
 	for (int j = 0; j < 4; j++)
 	{

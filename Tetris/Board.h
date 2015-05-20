@@ -13,12 +13,13 @@ public:
 	Board();
 	~Board();
 
-	int GetBlock(int x, int y) { return m_blocks[y][x]; }
+	int GetBlock(int x, int y) const { return m_blocks[y][x]; }
 	void SetBlock(int x, int y, int value) { m_blocks[y][x] = value; }
 
-	void AddPieceBlocks(Piece piece);
+	void AddPieceBlocks(const Piece& piece);
 	int ClearFullLines();
-	void Render(int x, int y);
+	void Render(int x, int y) const;
+	bool PieceIntersects(const Piece& piece) const;
 
 private:
 	void RemoveLine(int line);
